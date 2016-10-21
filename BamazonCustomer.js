@@ -1,38 +1,119 @@
+// Imports ///////////////////////////////////////////////////////////////////////////////////////////////////
 var mysql = require('mysql');
 var connection = require('./connection.js');
 
-var table = require('text-table')
+var table = require('text-table');
+
+var prompt = require('prompt');
+var inquirer = require('inquirer');
+
+// Functions ////////////////////////////////////////////////////////////////////////////////////////////////
+
+function displayProducts() {
+
+	// query the database
+	connection.query('select * from products', function(err, res) {
+
+		// Display Item ID, product name, and price of each item in the database
+		var dataToDisplay = [["\nID", "Name", "Price"], ['==','====================================================','==========']];
 
 
+		// loop through the results of the database query and display items in a table
+		for (i = 0; i < res.length; i++){
+
+			var row = [];
+			var item = res[i];
+
+			row.push(item.ItemID, item.ProductName, item.Price)
+
+			dataToDisplay.push(row)
+		};
+
+		var display = table( dataToDisplay, {hsep:' | '})
+
+		console.log(display);
+		console.log('\n')
+
+		// prompt the customer to place an order
+		orderPrompt();
+
+	});
+};
+
+function newOrderPrompt() {
+
+	inquirer.prompt(
+	{
+		'type': 'confirm',
+		'message': 'Would you like to place another order?',
+		'name': "newOrder"
+	}).then(function(answers){
+
+		if (answers.newOrder == true) {
+			displayProducts();
+		}else {
+			process.exit();
+		}
+	})
+};
+
+function orderPrompt() {
+	prompt.start();
+
+	prompt.get(['ProductID', 'Quantity'], function(err, res) {
+
+		var id = res.ProductID;
+		var quantity = parseFloat(res.Quantity);
+
+		connection.query('select * from products where ItemID = ?', [id], function(err, res) {
+
+			var item = res[0];
+
+			// if the check stock function returns false (that there is no remaining stock)
+			if (checkStock(item, quantity) == false) {
+
+				console.log("Sorry, but there isn't enough stock left of that item to complete your order.")
+
+				orderPrompt();
+
+			// if there is enough stock remaining
+			}else{
+
+				placeOrder(item, quantity);
+
+			}
+		});
+	});
+};
+
+function checkStock(item, orderQuantity) {
+
+	// not in stock
+	if (item.StockQuantity - orderQuantity < 0) {return false}
+	// in stock
+	else { return true}
+};
+
+function placeOrder(item, orderQuantity) {
+
+
+	connection.query('update products set StockQuantity=? where ItemID = ?', [item.StockQuantity - orderQuantity, item.ItemID], function(err, res){
+
+		var price = orderQuantity * item.Price;
+
+		console.log('Your order of ' + orderQuantity + ' ' + item.ProductName + ' has been placed. Your total will be $' + price +'. Thank you!' )
+
+		newOrderPrompt();
+	})
+};
+
+// Run the program ////////////////////////////////////////////////////////////////////////////////////////
+
+// connect to the database
 connection.connect(function(err) {
 	if (err) throw err;
-	console.log("connected as id " + connection.threadId);
+	// console.log("connected as id " + connection.threadId);
 })
 
+displayProducts();
 
-// initial query to display products
-connection.query('select * from products', function(err, res) {
-
-	console.log(res)
-
-	var dataToDisplay = [["\nName", "Department", "Price", "Quantity"]];
-
-
-	for (i = 0; i < res.length; i++){
-		// console.log("Product: " + res[i].ProductName + ' | ' + "Department: " + res[i].DepartmentName + ' | ' + 
-		// 	'Price: $' + res[i].price + ' | ' + 'Quantity: ' + res[i].StockQuantity + ' | ' )
-		// console.log("\n====================================================================================================\n")
-		var row = [];
-
-		row.push(res[i].ProductName, res[i].DepartmentName, res[i].price, res[i].StockQuantity)
-
-		dataToDisplay.push(row)
-
-		console.log(dataToDisplay)
-	};
-
-	var display = table( dataToDisplay, {hsep:' | '})
-
-	console.log(display);
-
-})
