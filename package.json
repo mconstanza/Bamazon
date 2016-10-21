@@ -1,0 +1,24 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "node-base store front end for learning MySQL databases.",
+  "main": "BamazonCustomer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nessfalco/Bamazon.git"
+  },
+  "author": "Mike Constanza",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nessfalco/Bamazon/issues"
+  },
+  "homepage": "https://github.com/nessfalco/Bamazon#readme",
+  "dependencies": {
+    "mysql": "^2.11.1",
+    "prompt": "^1.0.0",
+    "text-table": "^0.2.0"
+  }
+}
