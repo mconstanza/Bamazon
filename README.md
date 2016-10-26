@@ -3,7 +3,8 @@ Mock Amazon storefront that accesses an SQL database using node
 
 ### Customer View
 * The opening screen and Products table
-![Products Table in BamazonCustomer](/images/1.jpg)
+![Products Table in BamazonCustomer][products table]
+    [products table]: /images/1.jpg
 
 * Database before order is placed
 ![Database before order is placed](/images/2.jpg)
