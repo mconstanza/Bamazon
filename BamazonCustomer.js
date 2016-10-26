@@ -101,11 +101,25 @@ function placeOrder(item, orderQuantity) {
 
 		var price = orderQuantity * item.Price;
 
+		updateDepartmentSales(price, item.DepartmentName);
+
 		console.log('Your order of ' + orderQuantity + ' ' + item.ProductName + ' has been placed. Your total will be $' + price +'. Thank you!' )
 
 		newOrderPrompt();
 	})
 };
+
+function updateDepartmentSales(sales, department) {
+
+	var query = 'update departments set TotalSales=TotalSales+? where DepartmentName=?';
+	var parameters = [sales, department];
+
+	connection.query(query, parameters, function(err, res) {
+
+		if (err){console.log(err)}
+	})
+
+}
 
 // Run the program ////////////////////////////////////////////////////////////////////////////////////////
 
