@@ -61,4 +61,4 @@ Mock Amazon storefront that accesses an SQL database using node
 
 * Database after creating new department
 
-![Database after creating new department](/images/exexutive4.jpg)
+![Database after creating new department](/images/executive4.jpg)
