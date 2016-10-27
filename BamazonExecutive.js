@@ -49,9 +49,11 @@ function salesByDepartment() {
 			var row = [];
 			var department = res[i];
 
-			var profit = '$'+ (department.TotalSales - department.OverHeadCosts);
+			var profit = department.TotalSales - department.OverHeadCosts;
 
-			row.push(department.DepartmentID, department.DepartmentName, '$' + department.OverHeadCosts, '$' + department.TotalSales, profit)
+			profit = round(profit, 2);
+
+			row.push(department.DepartmentID, department.DepartmentName, '$' + department.OverHeadCosts, '$' + department.TotalSales, '$' + profit)
 
 			dataToDisplay.push(row)
 		};
@@ -85,6 +87,10 @@ function addNewDepartment() {
 			}
 		})
 	})
+}
+
+function round(value, decimals) {
+  return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
 }
 
 mainPrompt();

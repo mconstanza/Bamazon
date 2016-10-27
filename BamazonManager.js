@@ -156,7 +156,7 @@ function addNewProduct() {
 	prompt.get(['Name','DepartmentName', 'Price', 'Quantity'], function(err, res) {
 		var product = res;
 
-		connection.query('insert into products (ProductName,DepartmentName,Price, StockQuantity) values (?,?,?,?);',[product.Name, product.Department, product.Price, product.Quantity], function(err, res) {
+		connection.query('insert into products (ProductName,DepartmentName,Price, StockQuantity) values (?,?,?,?);',[product.Name, product.DepartmentName, product.Price, product.Quantity], function(err, res) {
 			if (err){
 				console.log(err)
 			}
